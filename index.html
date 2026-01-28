@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mood Watch - Mood Based Randomizer</title>
+    <title>Mood Watch - AI Powered</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        /* --- CSS: ส่วนดีไซน์ --- */
+        /* --- CSS: ส่วนดีไซน์ (เหมือนเดิม เพิ่มเติมคือ Loading) --- */
         :root {
             --primary: #1A3B4A;    /* Deep Ocean Blue */
             --secondary: #2C7A87;  /* Muted Teal */
@@ -14,7 +14,6 @@
             --bg: #F7F9FA;         /* Off-white */
             --text: #333333;       /* Dark Grey */
             --white: #FFFFFF;
-            --mint: #8CDAC0;       /* Mint Green */
         }
 
         * { box-sizing: border-box; }
@@ -32,11 +31,7 @@
             text-align: center;
         }
 
-        .container {
-            width: 100%;
-            max-width: 700px;
-            padding: 20px;
-        }
+        .container { width: 100%; max-width: 700px; padding: 20px; }
 
         /* Hero Section */
         h1 {
@@ -49,7 +44,7 @@
 
         p.subtitle {
             color: var(--secondary);
-            margin-bottom: 3rem;
+            margin-bottom: 1rem; /* ปรับระยะห่างนิดหน่อยให้สวยขึ้น */
             font-size: 1.1rem;
             font-weight: 300;
         }
@@ -57,14 +52,13 @@
         /* Mood Grid */
         .mood-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 คอลัมน์บนมือถือ */
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
             margin-bottom: 2rem;
+            margin-top: 2rem;
         }
 
-        @media (min-width: 600px) {
-            .mood-grid { grid-template-columns: repeat(3, 1fr); } /* 3 คอลัมน์บนจอใหญ่ */
-        }
+        @media (min-width: 600px) { .mood-grid { grid-template-columns: repeat(3, 1fr); } }
 
         .mood-btn {
             background: var(--white);
@@ -76,15 +70,12 @@
             font-family: 'Montserrat', sans-serif;
             font-weight: 600;
             font-size: 1rem;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: all 0.3s;
             box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
         }
 
-        .mood-btn span { font-size: 1.5rem; } /* ขนาด icon Emoji */
+        .mood-btn span { font-size: 1.5rem; }
 
         .mood-btn:hover {
             transform: translateY(-5px);
@@ -110,15 +101,8 @@
         .btn-surprise:active { transform: scale(0.98); }
 
         /* Result Card */
-        .result-view {
-            display: none; /* ซ่อนไว้ก่อน */
-            animation: slideUp 0.6s ease;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .result-view { display: none; animation: slideUp 0.6s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
         .movie-card {
             background: var(--white);
@@ -129,101 +113,57 @@
             position: relative;
         }
 
-        /* ส่วนจำลอง Poster (เพราะเราไม่มีไฟล์รูปจริง) */
         .poster-placeholder {
-            width: 100%;
-            height: 250px;
-            background: linear-gradient(to top, var(--primary), var(--secondary));
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: rgba(255,255,255,0.2);
-            font-size: 3rem;
-            position: relative;
-        }
-        
-        .poster-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            color: white;
+            width: 100%; height: 200px; /* ลดความสูงลงนิดนึงให้สมดุล */
+            background: linear-gradient(120deg, var(--primary), var(--secondary));
+            display: flex; justify-content: center; align-items: center;
+            color: rgba(255,255,255,0.3); font-size: 4rem;
         }
 
-        .content-body {
-            padding: 25px;
-        }
+        .content-body { padding: 25px; }
 
-        .tags {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
+        .tags { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .tag { background: #EDF2F5; color: var(--secondary); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
 
-        .tag {
-            background: #EDF2F5;
-            color: var(--secondary);
-            padding: 6px 12px;
+        .movie-title { font-size: 2rem; margin: 0 0 10px 0; color: var(--primary); line-height: 1.2; }
+        .movie-desc { color: #666; line-height: 1.6; margin-bottom: 15px; }
+
+        /* CSS สำหรับเหตุผลของ AI */
+        .ai-reason {
+            background-color: #f0f8ff;
+            border-left: 4px solid var(--secondary);
+            padding: 15px;
             border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .movie-title {
-            font-size: 2rem;
-            margin: 0 0 10px 0;
-            color: var(--primary);
-            line-height: 1.2;
-        }
-
-        .movie-desc {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 25px;
+            font-size: 0.9rem;
+            color: #444;
+            margin-bottom: 20px;
+            font-style: italic;
         }
 
         .platform-box {
-            background: #F4F6F8;
-            padding: 15px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            background: #F4F6F8; padding: 15px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: space-between;
         }
 
-        .btn-action-group {
-            margin-top: 20px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-primary {
-            flex: 2;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .btn-outline {
-            flex: 1;
-            background: transparent;
-            border: 2px solid #EEE;
-            color: #888;
-            padding: 15px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        
+        .btn-action-group { margin-top: 20px; display: flex; gap: 10px; }
+        .btn-primary { flex: 2; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 600; }
+        .btn-outline { flex: 1; background: transparent; border: 2px solid #EEE; color: #888; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 600; }
         .btn-outline:hover { border-color: var(--secondary); color: var(--secondary); }
+
+        /* Loading Spinner Animation */
+        .loading-container {
+            display: none; /* ซ่อนไว้ก่อน */
+            margin-top: 30px;
+        }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 5px solid #e1e4e8;
+            border-top: 5px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     </style>
 </head>
@@ -233,40 +173,28 @@
         <div id="home-view">
             <h1>What 2 Watch</h1>
             <p class="subtitle">แบมมี่อยากดูเรื่องไหนเอ่ย</p>
-            <p class="subtitle">วันนี้อารมณ์ไหน? ให้เราช่วยเลือกหนังให้เอง</p>
+            <p class="subtitle">วันนี้อารมณ์ไหน? ให้ AI ช่วยเลือกหนังให้เอง</p>
             
             <div class="mood-grid">
-                <button class="mood-btn" onclick="findMovie('laugh')">
-                    <span>😂</span> Need a Laugh
-                </button>
-                <button class="mood-btn" onclick="findMovie('cry')">
-                    <span>😭</span> Want to Cry
-                </button>
-                <button class="mood-btn" onclick="findMovie('thrill')">
-                    <span>😱</span> Thriller
-                </button>
-                <button class="mood-btn" onclick="findMovie('smart')">
-                    <span>🧠</span> Brain Food
-                </button>
-                <button class="mood-btn" onclick="findMovie('fantasy')">
-                    <span>✨</span> Escapism
-                </button>
-                <button class="mood-btn" onclick="findMovie('chill')">
-                    <span>🍃</span> Chill / Cozy
-                </button>
+                <button class="mood-btn" onclick="askGemini('laugh')"><span>😂</span> Need a Laugh</button>
+                <button class="mood-btn" onclick="askGemini('cry')"><span>😭</span> Want to Cry</button>
+                <button class="mood-btn" onclick="askGemini('thrill')"><span>😱</span> Thriller</button>
+                <button class="mood-btn" onclick="askGemini('smart')"><span>🧠</span> Brain Food</button>
+                <button class="mood-btn" onclick="askGemini('fantasy')"><span>✨</span> Escapism</button>
+                <button class="mood-btn" onclick="askGemini('chill')"><span>🍃</span> Chill / Cozy</button>
             </div>
 
-            <button class="btn-surprise" onclick="findMovie('any')">🎲 สุ่มมาเลย อะไรก็ได้!</button>
+            <button class="btn-surprise" onclick="askGemini('any')">🎲 สุ่มมาเลย อะไรก็ได้!</button>
+
+            <div id="loading" class="loading-container">
+                <div class="spinner"></div>
+                <p style="margin-top:15px; color:#888;">AI กำลังเลือกหนังที่เหมาะกับแบมมี่...</p>
+            </div>
         </div>
 
         <div id="result-view" class="result-view">
             <div class="movie-card">
-                <div class="poster-placeholder" id="poster-bg">
-                    🎬
-                    <div class="poster-overlay">
-                        <span id="movie-year" style="opacity: 0.8; font-size: 0.9rem;">2024</span>
-                    </div>
-                </div>
+                <div class="poster-placeholder" id="poster-bg">🍿</div>
 
                 <div class="content-body">
                     <div class="tags">
@@ -277,6 +205,10 @@
                     <h2 class="movie-title" id="movie-title">Movie Title</h2>
                     <p class="movie-desc" id="movie-desc">Description goes here.</p>
 
+                    <div class="ai-reason" id="movie-reason">
+                        เหตุผลที่แนะนำ...
+                    </div>
+
                     <div class="platform-box">
                         <span style="font-weight:600; color:#555;">Watch on:</span>
                         <strong style="color:var(--primary);" id="movie-platform">Netflix</strong>
@@ -284,7 +216,7 @@
 
                     <div class="btn-action-group">
                         <button class="btn-outline" onclick="resetApp()">Back</button>
-                        <button class="btn-primary" onclick="findMovie('retry')">Watch Another</button>
+                        <button class="btn-primary" onclick="askGemini('retry')">Watch Another</button>
                     </div>
                 </div>
             </div>
@@ -292,91 +224,110 @@
     </div>
 
     <script>
-        // --- JavaScript: ส่วนประมวลผล ---
+        // --- ส่วนสำคัญ: API Key และ Logic ---
+        
+        // ใส่ API Key ที่คุณให้มา
+        const API_KEY = 'AIzaSyA9_xiWRwqDI_dYat-47Q_bnbMK_cndP_I'; 
+        
+        let currentMoodPrompt = '';
+        let currentMoodDisplay = '';
 
-        // 1. ฐานข้อมูล (Data) - ผมใส่ให้ 24 เรื่องครอบคลุมทุกอารมณ์
-        const moviesDatabase = [
-            // Laugh (ตลก)
-            { title: "The Grand Budapest Hotel", genre: "Comedy/Art", mood: "laugh", year: "2014", platform: "Disney+", desc: "ความวายป่วงในโรงแรมหรูสีชมพู ภาพสวยสมมาตรและมุกตลกหน้าตาย" },
-            { title: "Superbad", genre: "Comedy", mood: "laugh", year: "2007", platform: "Netflix", desc: "เพื่อนซี้วัยรุ่นกับภารกิจหาเครื่องดื่มไปปาร์ตี้ที่เละเทะจนกู่ไม่กลับ" },
-            { title: "Brooklyn Nine-Nine", genre: "Sitcom", mood: "laugh", year: "2013", platform: "Netflix", desc: "สถานีตำรวจที่เต็มไปด้วยคนเพี้ยน มุกตลกโบ๊ะบ๊ะที่ดูได้เรื่อยๆ ไม่เครียด" },
-            { title: "Game Night", genre: "Comedy/Thriller", mood: "laugh", year: "2018", platform: "HBO Go", desc: "เมื่อคืนเล่นเกมปริศนากลายเป็นคดีลักพาตัวจริงๆ ที่ทั้งฮาและลุ้นระทึก" },
+        // แปลงปุ่มที่กด เป็นคำสั่ง (Prompt) ภาษาไทยสำหรับส่งให้ AI
+        const moodPrompts = {
+            'laugh': 'หนังตลก ฮาๆ ขำท้องแข็ง หรือ Feel good อารมณ์ดี',
+            'cry': 'หนังเศร้า เรียกน้ำตา ซึ้งกินใจ ดราม่าหนักๆ',
+            'thrill': 'หนังระทึกขวัญ ตื่นเต้น ลุ้นระทึก หรือสยองขวัญ',
+            'smart': 'หนังฉลาดๆ หักมุม ปรัชญา ไซไฟ หรือสืบสวนสอบสวน',
+            'fantasy': 'หนังแฟนตาซี หลุดโลก เวทมนตร์ ผจญภัย',
+            'chill': 'หนังชิวๆ อบอุ่นหัวใจ ดูสบายๆ ภาพสวย',
+            'any': 'หนังอะไรก็ได้ที่เจ๋งๆ สนุกๆ ระดับตำนาน'
+        };
 
-            // Cry (เศร้า/ซึ้ง)
-            { title: "About Time", genre: "Romance", mood: "cry", year: "2013", platform: "Netflix", desc: "ชายหนุ่มย้อนเวลาได้ แต่สุดท้ายเขาเรียนรู้ว่าการใช้ชีวิตในปัจจุบันนั้นมีค่าที่สุด" },
-            { title: "Grave of the Fireflies", genre: "Animation", mood: "cry", year: "1988", platform: "Netflix", desc: "โศกนาฏกรรมสงครามโลกครั้งที่ 2 ผ่านมุมมองของสองพี่น้อง การันตีน้ำตาแตก" },
-            { title: "Aftersun", genre: "Drama", mood: "cry", year: "2022", platform: "MUBI", desc: "ความทรงจำสีจางๆ ของลูกสาวที่มีต่อพ่อ ในทริปพักร้อนครั้งสุดท้าย" },
-            
-            // Thrill (ระทึกขวัญ)
-            { title: "Parasite", genre: "Thriller", mood: "thrill", year: "2019", platform: "Viu", desc: "ครอบครัวตกอับที่แทรกซึมเข้าบ้านคนรวย จุดเริ่มต้นของความวายป่วงที่คาดเดาไม่ได้" },
-            { title: "Gone Girl", genre: "Mystery", mood: "thrill", year: "2014", platform: "Netflix", desc: "เมื่อภรรยาหายตัวไปและหลักฐานมัดตัวสามี แต่ความจริงน่ากลัวกว่าที่คิด" },
-            { title: "A Quiet Place", genre: "Horror", mood: "thrill", year: "2018", platform: "Netflix", desc: "โลกที่ห้ามส่งเสียง ถ้าทำเสียงดังคือตาย การเอาตัวรอดที่ลุ้นจนกลั้นหายใจ" },
+        const moodNames = {
+            'laugh': 'Need a Laugh', 'cry': 'Want to Cry', 'thrill': 'Thriller',
+            'smart': 'Brain Food', 'fantasy': 'Escapism', 'chill': 'Chill & Cozy', 'any': 'Surprise Me'
+        };
 
-            // Smart (ใช้สมอง/ไซไฟ)
-            { title: "Interstellar", genre: "Sci-Fi", mood: "smart", year: "2014", platform: "HBO Go", desc: "การเดินทางทะลุรูหนอนเพื่อหาบ้านใหม่ให้มนุษยชาติ ทฤษฎีเวลาที่บีบหัวใจ" },
-            { title: "Inception", genre: "Action/Sci-Fi", mood: "smart", year: "2010", platform: "Netflix", desc: "การจารกรรมความลับผ่านความฝัน ซ้อนฝันหลายชั้นจนแยกไม่ออกว่าตื่นหรือหลับ" },
-            { title: "Arrival", genre: "Sci-Fi", mood: "smart", year: "2016", platform: "Netflix", desc: "เมื่อยานต่างดาวลงจอด นักภาษาศาสตร์ต้องหาทางสื่อสารก่อนสงครามจะเกิด" },
-
-            // Fantasy (แฟนตาซี/หลุดโลก)
-            { title: "Spirited Away", genre: "Animation", mood: "fantasy", year: "2001", platform: "Netflix", desc: "เด็กหญิงหลงเข้ามิติวิญญาณ ต้องทำงานในโรงอาบน้ำเทพเจ้าเพื่อช่วยพ่อแม่" },
-            { title: "Dune", genre: "Sci-Fi/Epic", mood: "fantasy", year: "2021", platform: "HBO Go", desc: "มหากาพย์สงครามแย่งชิงทรัพยากรบนดาวทะเลทราย งานภาพระดับ Masterpiece" },
-            { title: "Harry Potter", genre: "Fantasy", mood: "fantasy", year: "2001", platform: "HBO Go", desc: "โลกเวทมนตร์ โรงเรียนพ่อมด และการต่อสู้กับจอมมารที่ทุกคนคุ้นเคย" },
-
-            // Chill (ผ่อนคลาย)
-            { title: "My Neighbor Totoro", genre: "Animation", mood: "chill", year: "1988", platform: "Netflix", desc: "ความน่ารักของเทพารักษ์ตัวใหญ่ใจดีในชนบทญี่ปุ่น ดูแล้วใจฟู" },
-            { title: "Chef", genre: "Drama/Comedy", mood: "chill", year: "2014", platform: "Prime Video", desc: "เชฟตกอับลาออกไปขายแซนด์วิชบนรถ Food Truck ดูแล้วหิวและมีความสุข" },
-            { title: "Our Little Sister", genre: "Drama", mood: "chill", year: "2015", platform: "Netflix", desc: "ชีวิตเรียบง่ายแต่งดงามของสี่พี่น้องในเมืองคามาคุระ ภาพสวยละมุนตา" }
-        ];
-
-        let currentMood = '';
-
-        // 2. ฟังก์ชันหลัก
-        function findMovie(mood) {
-            // เช็คว่ากดปุ่ม "Watch Another" หรือไม่ ถ้าใช่ให้ใช้ mood เดิม
-            if (mood === 'retry') {
-                mood = currentMood;
+        async function askGemini(moodKey) {
+            // เช็คว่ากดปุ่มลองใหม่ (Retry) หรือเปล่า
+            if (moodKey === 'retry') {
+                // ใช้ Prompt เดิม
             } else {
-                currentMood = mood;
+                currentMoodPrompt = moodPrompts[moodKey];
+                currentMoodDisplay = moodNames[moodKey];
             }
 
-            let filteredList;
-            if (mood === 'any' || mood === '') {
-                filteredList = moviesDatabase;
-            } else {
-                filteredList = moviesDatabase.filter(m => m.mood === mood);
+            // 1. แสดง Loading และซ่อนปุ่ม
+            document.querySelector('.mood-grid').style.display = 'none';
+            document.querySelector('.btn-surprise').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+
+            // 2. สร้างคำสั่ง (Prompt)
+            const prompt = `
+                แนะนำภาพยนตร์หรือซีรีส์ 1 เรื่อง สำหรับคนที่รู้สึก: "${currentMoodPrompt}"
+                ตอบกลับมาเป็น JSON เท่านั้น (ห้ามมี Markdown) ในรูปแบบนี้:
+                {
+                    "title": "ชื่อเรื่อง (ภาษาอังกฤษ)",
+                    "year": "ปีที่ฉาย",
+                    "genre": "แนวหนัง",
+                    "description": "เรื่องย่อสั้นๆ ภาษาไทย (2 บรรทัด)",
+                    "reason": "เหตุผลสั้นๆ ว่าทำไมเรื่องนี้ถึงเหมาะกับอารมณ์นี้ (ภาษาไทย เป็นกันเอง)",
+                    "platform": "Netflix, Disney+, HBO หรือ Prime"
+                }
+            `;
+
+            try {
+                // 3. ส่งคำสั่งไปหา Gemini
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+
+                const data = await response.json();
+                
+                // 4. แปลงข้อมูล (Parse JSON)
+                const aiText = data.candidates[0].content.parts[0].text;
+                // ล้าง Markdown ออก (เผื่อ AI ตอบมามี ```json)
+                const cleanJson = aiText.replace(/```json|```/g, '').trim();
+                const movie = JSON.parse(cleanJson);
+
+                renderResult(movie);
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("เกิดข้อผิดพลาดในการเชื่อมต่อกับ AI ลองกดใหม่อีกทีนะ!");
+                resetApp(); // กลับหน้าแรกถ้า Error
             }
-
-            // สุ่มหนัง
-            const randomIndex = Math.floor(Math.random() * filteredList.length);
-            const movie = filteredList[randomIndex];
-
-            renderResult(movie);
         }
 
-        // 3. ฟังก์ชันแสดงผล
         function renderResult(movie) {
+            // ใส่ข้อมูลลงในหน้าเว็บ
             document.getElementById('movie-title').innerText = movie.title;
             document.getElementById('movie-genre').innerText = movie.genre;
             document.getElementById('movie-year').innerText = movie.year;
-            document.getElementById('movie-desc').innerText = movie.desc;
+            document.getElementById('movie-desc').innerText = movie.description;
+            document.getElementById('movie-reason').innerText = `💡 ${movie.reason}`;
             document.getElementById('movie-platform').innerText = movie.platform;
-            
-            // แปลงรหัส Mood เป็นชื่อสวยๆ
-            const moodNames = {
-                'laugh': 'Need a Laugh', 'cry': 'Want to Cry', 'thrill': 'Thriller',
-                'smart': 'Brain Food', 'fantasy': 'Escapism', 'chill': 'Chill & Cozy', 'any': 'Random'
-            };
-            document.getElementById('movie-mood').innerText = moodNames[movie.mood] || 'Random';
+            document.getElementById('movie-mood').innerText = currentMoodDisplay;
 
-            // สลับหน้าจอ
+            // ซ่อน Loading -> โชว์ผลลัพธ์
+            document.getElementById('loading').style.display = 'none';
             document.getElementById('home-view').style.display = 'none';
             document.getElementById('result-view').style.display = 'block';
         }
 
-        // 4. ฟังก์ชันกลับหน้าแรก
         function resetApp() {
+            // กลับหน้าแรก
             document.getElementById('result-view').style.display = 'none';
             document.getElementById('home-view').style.display = 'block';
+            
+            // คืนค่าปุ่มที่ซ่อนไป
+            document.querySelector('.mood-grid').style.display = 'grid';
+            document.querySelector('.btn-surprise').style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
         }
     </script>
 </body>
